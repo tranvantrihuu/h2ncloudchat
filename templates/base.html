@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}H2N CLOUD CHAT{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+    background-color: #0066cc;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Cho phép xuống dòng khi không đủ chỗ */
+    width: 100%;
+    max-width: 100vw; /* Không vượt chiều rộng màn hình */
+    box-sizing: border-box;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+
+        .navbar-left {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .navbar-right a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+
+        .navbar-right a:hover {
+            text-decoration: underline;
+        }
+
+        .center-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 10px; /* tránh che bởi navbar */
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-left">H2N CLOUD CHAT</div>
+        <div class="navbar-right">
+            {% if user %}
+            <img src="{{ user.avatar }}" alt="avatar" class="avatar">
+            <span>{{ user.name }}</span>
+            {% endif %}
+            <a href="/">Home</a>
+            <a href="/chat">Chat</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <div class="center-container">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

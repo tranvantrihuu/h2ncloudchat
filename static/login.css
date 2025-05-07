@@ -1,0 +1,243 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a05d5, #7697ff);
+    color: #333;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* NAVIGATION BAR */
+.navbar {
+    background-color: #0066cc;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.navbar-left {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.navbar-right a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+}
+
+.navbar-right a:hover {
+    text-decoration: underline;
+}
+
+/* CENTER WRAPPER */
+.center-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px;
+}
+
+/* LOGIN CARD BOX */
+.login-card {
+    background: white;
+    width: 300px;
+    height: 350px;
+    padding: 30px;
+    box-sizing: content-box;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
+}
+
+.login-card h2 {
+    margin-bottom: 24px;
+    font-size: 20px;
+    color: #333;
+}
+
+/* INPUT + ICON */
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    background-color: #f9f9f9;
+}
+
+.input-group .icon {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #666;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 15px;
+}
+
+/* BUTTON */
+.login-card button {
+    background-color: #4da6ff;
+    border: none;
+    color: white;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.login-card button:hover {
+    background-color: #3399ff;
+}
+
+/* LINKS */
+.login-card .links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+.login-card .links a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.login-card .links a:hover {
+    text-decoration: underline;
+}
+
+/* ERROR MESSAGE */
+.error {
+    color: #00fff7;
+    font-size: 14px;
+    text-align: center;
+}
+.card {
+    background: white;
+    width: 300px;
+    padding: 30px;
+    box-sizing: content-box;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: center;
+}
+
+.login-card {
+    height: 350px;
+}
+
+.register-card {
+    height: auto; /* tự co giãn */
+}
+.register-btn {
+    background-color: #4da6ff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #3399ff;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.forgot-card {
+    background: white;
+    width: 320px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+.forgot-card h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.forgot-card .input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    background-color: #f9f9f9;
+}
+
+.forgot-card .input-group .icon {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #666;
+}
+
+.forgot-card .input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 15px;
+}
+
+.forgot-card button {
+    background-color: #4da6ff;
+    border: none;
+    color: white;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.forgot-card button:hover {
+    background-color: #3399ff;
+}

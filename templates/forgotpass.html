@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="forgot-card">
+    <h2>Quên mật khẩu</h2>
+    <form method="POST" action="/forgotpass">
+        <div class="input-group">
+            <span class="icon">📧</span>
+            <input type="email" name="email" placeholder="Nhập Email..." required>
+        </div>
+        <button type="submit">Gửi Link Reset</button>
+    </form>
+</div>
+{% endblock %}

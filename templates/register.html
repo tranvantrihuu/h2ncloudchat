@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Đăng ký tài khoản{% endblock %}
+{% block content %}
+
+<div class="card register-card">
+    <h2>Đăng ký</h2>
+    <form action="/signup" method="post" enctype="multipart/form-data">
+        <div class="input-group">
+            <span class="icon">👤</span>
+            <input type="text" name="name" placeholder="Họ tên" required>
+        </div>
+        <div class="input-group">
+            <span class="icon">📧</span>
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="input-group">
+            <span class="icon">🔒</span>
+            <input type="password" name="password" placeholder="Mật khẩu" required>
+        </div>
+        <div class="input-group">
+            <span class="icon">🎂</span>
+            <input type="date" name="birth" placeholder="Ngày sinh" required>
+        </div>
+        <div class="input-group">
+            <span class="icon">🚻</span>
+            <input type="text" name="gender" placeholder="Giới tính" required>
+        </div>
+        <div class="input-group">
+            <span class="icon">🖼️</span>
+            <input type="file" name="avatar">
+        </div>
+        <button type="submit" class="register-btn">Đăng ký</button>
+    </form>
+    <div class="links">
+        <a href="/">Quay lại đăng nhập</a>
+    </div>
+</div>
+
+{% endblock %}

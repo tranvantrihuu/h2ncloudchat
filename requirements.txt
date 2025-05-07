@@ -1,0 +1,5 @@
+Flask
+firebase-admin
+pyrebase4
+cloudinary
+python-dotenv

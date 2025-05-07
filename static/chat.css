@@ -1,0 +1,547 @@
+/* ========== Global ========== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6c8edb, #b8bdf8);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ========== Wrapper ========== */
+.chat-app {
+  display: flex;
+  justify-content: center;    /* center horizontally */
+  align-items: flex-start;    /* align tops */
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;          /* max total width */
+  margin: 0 auto;
+}
+
+/* ========== Sidebar ========== */
+.chat-sidebar {
+  height: 532px;
+  width: 300px;            /* hoặc 30% nếu responsive */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.chat-main {
+  height: 532px;
+  width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* — Search bar — */
+.search-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.search-group input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.search-group button {
+  width: 40px;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* — Toggle history / friends — */
+.toggle-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.toggle-buttons button {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #f0f0f0;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.toggle-buttons button.active {
+  background: #4a90e2;
+  color: #fff;
+}
+.toggle-buttons button:hover:not(.active) {
+  background: #e0e0e0;
+}
+
+/* — Lists (history/friends) — */
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.list.hidden {
+  display: none;
+}
+.list .message-placeholder {
+  color: #888;
+  padding: 12px;
+  text-align: center;
+}
+.list .item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.list .item:hover {
+  background: #f5f5f5;
+}
+.list .item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.list .item span {
+  font-size: 15px;
+  color: #333;
+}
+
+/* ========== Main Chat ========== */
+.chat-main {
+  flex: 1;                    /* fill remaining */
+  max-width: 800px;           /* cap width */
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* — Header bar — */
+.chat-header {
+  padding: 12px 16px;
+  background: #4a90e2;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* — Messages panel — */
+.chat-box {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f9f9f9;
+}
+.message {
+  max-width: 70%;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  word-wrap: break-word;
+}
+.message.sent {
+  background: #d1eaff;
+  align-self: flex-end;
+}
+.message.received {
+  background: #e2e2e2;
+  align-self: flex-start;
+}
+
+/* — Input bar — */
+.chat-input {
+  display: flex;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  gap: 8px;
+}
+.chat-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.chat-input button {
+  padding: 8px 16px;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chat-input button:disabled {
+  background: #aac9f7;
+  cursor: not-allowed;
+}
+.chat-input button:not(:disabled):hover {
+  background: #357ac9;
+}
+
+/* ========== Profile Card ========== */
+/* small avatar in the user-info panel */
+img.profile-avatar {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto 8px;
+}
+.profile-card {
+  text-align: center;
+  max-width: 300px;
+  margin: 0 auto;
+}
+.profile-card h4,
+.profile-card p {
+  margin: 4px auto;
+  line-height: 1.2;
+}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: linear-gradient(135deg, #6c8edb, #b8bdf8);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Layout chính */
+.chat-app {
+  display: flex;
+  height: calc(100vh - 60px); /* Trừ navbar nếu có */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+/* Sidebar 30% */
+.chat-sidebar {
+  flex: 0 0 30%;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Main chat 70% */
+.chat-main {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.chat-header {
+  background: #4a90e2;
+  color: #fff;
+  padding: 12px 16px;
+  font-weight: bold;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Chat box */
+.chat-box {
+  flex: 1;
+  padding: 16px;
+  background: #f9f9f9;
+  overflow-y: auto;
+}
+
+/* Input */
+.chat-input {
+  display: flex;
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  gap: 8px;
+}
+.chat-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+.chat-input button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4a90e2;
+  color: #fff;
+  cursor: pointer;
+}
+.chat-input button:disabled {
+  background-color: #aac9f7;
+  cursor: not-allowed;
+}
+.friend-request-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  margin-bottom: 8px;
+}
+.friend-request-item img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.friend-request-item span {
+  flex-grow: 1;
+  font-size: 14px;
+}
+.friend-request-item button {
+  padding: 4px 8px;
+  margin-left: 4px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.friend-request-item button.accept {
+  background: #4caf50;
+  color: white;
+}
+.friend-request-item button.reject {
+  background: #f44336;
+  color: white;
+}
+.friend-button {
+  padding: 8px 16px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.friend-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.friend-button:hover:not(:disabled) {
+  background: #357ac9;
+}
+.message {
+  display: inline-block;
+  clear: both;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  word-break: break-word;
+  max-width: 80%;
+}
+
+.message.sent {
+  background: #d1eaff;
+  float: right;
+  text-align: right;
+  border-top-right-radius: 0;
+}
+
+.message.received {
+  background: #e2e2e2;
+  float: left;
+  text-align: left;
+  border-top-left-radius: 0;
+}
+
+.message-content {
+  display: inline-block;
+  white-space: pre-wrap;
+}
+
+.message-content img {
+  max-width: 220px;
+  margin-top: 6px;
+  border-radius: 8px;
+  display: block;
+}
+/* ========== Global ========== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6c8edb, #b8bdf8);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ========== Wrapper ========== */
+.chat-app {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ========== Sidebar ========== */
+.chat-sidebar {
+  height: 532px;
+  width: 300px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.chat-main {
+  height: 532px;
+  width: 500px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* — Messages panel — */
+.chat-box {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f9f9f9;
+}
+.message {
+  max-width: 70%;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  word-wrap: break-word;
+}
+.message.sent {
+  background: #d1eaff;
+  align-self: flex-end;
+}
+.message.received {
+  background: #e2e2e2;
+  align-self: flex-start;
+}
+.list .item {
+  position: relative;
+}
+.list .item .delete-chat {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #f44336;
+  font-size: 16px;
+  cursor: pointer;
+}
+.list .item .delete-chat:hover {
+  color: #d32f2f;
+}
+.unfriend-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #f44336;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.unfriend-btn:hover {
+  color: #d32f2f;
+}
+.friend-request-item {
+  position: relative;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.friend-request-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.friend-request-item span {
+  flex: 1;
+  font-weight: bold;
+}
+
+.friend-request-item .accept {
+  background-color: #4CAF50; /* xanh lá */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.friend-request-item .accept:hover {
+  background-color: #388e3c;
+}
+button.accept {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button.accept:hover {
+  background-color: #357ab8;
+  transform: scale(1.03);
+}
+
+button.accept:active {
+  background-color: #2d639b;
+  transform: scale(0.98);
+}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Chat - H2N CLOUD CHAT{% endblock %}
+{% block content %}
+<script>
+  sessionStorage.setItem('me', '{{ uid }}');
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<div class="chat-app">
+
+  <!-- Sidebar -->
+  <aside class="chat-sidebar">
+    <div class="search-group">
+      <input type="text" id="searchInput" placeholder="Nhập email...">
+      <button id="searchBtn">🔍</button>
+    </div>
+
+    <div class="toggle-buttons">
+      <button id="historyBtn" class="active">Lịch sử</button>
+      <button id="friendsBtn">Bạn bè</button>
+    </div>
+
+    <div class="list" id="historyList">
+      <div class="message-placeholder">Chưa có lịch sử chat.</div>
+    </div>
+
+    <div class="list hidden" id="friendsList">
+      <div class="message-placeholder">Bạn chưa có bạn bè nào.</div>
+    </div>
+  </aside>
+
+  <!-- Main chat -->
+  <section class="chat-main">
+    <header class="chat-header" id="chatHeader">Hãy chọn cuộc trò chuyện</header>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="chat-input">
+  <input type="text" id="msgInput" placeholder="Nhập tin nhắn..." disabled>
+  <input type="file" id="fileInput" hidden>
+  <button id="fileBtn" title="Gửi file">Tệp</button>
+  <button id="sendBtn" disabled>Gửi</button>
+</div>
+
+  </section>
+
+</div>
+
+<script type="module" src="{{ url_for('static', filename='chat.js') }}"></script>
+{% endblock %}

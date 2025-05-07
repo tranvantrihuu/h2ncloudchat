@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Đăng nhập - H2N CLOUD CHAT{% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script>
+      alert("{{ messages[0] }}");
+    </script>
+  {% endif %}
+{% endwith %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<div class="card login-card">
+    <h2>Đăng nhập</h2>
+    <form action="/login" method="post">
+        <div class="input-group">
+            <span class="icon">📧</span>
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div class="input-group">
+            <span class="icon">🔒</span>
+            <input type="password" name="password" placeholder="Mật khẩu" required>
+        </div>
+        <button type="submit">Đăng nhập</button>
+    </form>
+    <div class="links">
+        <a href="/forgotpass">Quên mật khẩu</a>
+        <a href="/register">Đăng ký</a>
+    </div>
+</div>
+{% endblock %}
