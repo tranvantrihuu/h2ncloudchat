@@ -7,7 +7,10 @@ import {
   set,
   update,
   onValue,
-  push
+  push,
+  query,
+  orderByChild,
+  limitToLast
 } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 const SECRET_KEY = "h2ncloudchat_secret";
@@ -49,6 +52,40 @@ const sendBtn = document.getElementById("sendBtn");
 const chatBox = document.getElementById("chatBox");
 const chatHeader = document.getElementById("chatHeader");
 const msgInput = document.getElementById("msgInput");
+// … các import, cấu hình, encrypt/decrypt…
+
+// 1) Hàm đánh dấu đã đọc
+async function markAllRead(friendId) {
+  const chatId = [me, friendId].sort().join("_");
+  const chatSnap = await get(ref(db, `chats/${chatId}`));
+  if (!chatSnap.exists()) return;
+  const updates = {};
+  chatSnap.forEach(ms => {
+    const m = ms.val();
+    if (m.from !== me && m.read === false) {
+      updates[`chats/${chatId}/${ms.key}/read`] = true;
+    }
+  });
+  if (Object.keys(updates).length) {
+    await update(ref(db), updates);
+  }
+}
+
+// 2) Phiên bản startChat “chuẩn”
+function startChat(toUid, toName) {
+  currentChatUid = toUid;
+  chatHeader.textContent = `Đang trò chuyện với ${toName}`;
+  msgInput.disabled = false;
+  sendBtn.disabled = false;
+
+  // đánh dấu đã đọc → load lại history → lắng nghe tin nhắn
+  markAllRead(toUid).then(() => {
+    loadHistory();
+    listenToMessages(toUid);
+  });
+}
+
+// … rồi mới tới các hàm khác (sendBtn.onclick, loadHistory, loadFriends, …) …
 
 historyBtn.onclick = () => {
   historyBtn.classList.add("active");
@@ -108,13 +145,6 @@ document.getElementById("searchBtn").onclick = async () => {
   });
 };
 
-function startChat(toUid, toName) {
-  currentChatUid = toUid;
-  chatHeader.textContent = `Đang trò chuyện với ${toName}`;
-  msgInput.disabled = false;
-  sendBtn.disabled = false;
-  listenToMessages(toUid);
-}
 
 sendBtn.onclick = () => {
   const text = msgInput.value.trim();
@@ -125,7 +155,8 @@ sendBtn.onclick = () => {
     from: me,
     to: currentChatUid,
     message: encryptMessage(text),
-    time: ts
+    time: ts,
+    read: false
   });
   msgInput.value = "";
 };
@@ -164,20 +195,51 @@ async function loadHistory() {
     historyList.innerHTML = `<div class="message-placeholder">Chưa có lịch sử chat.</div>`;
     return;
   }
-
+  const partnerIds = [
+  ...new Set(
+    chatIds.map(chatId => {
+      const [a, b] = chatId.split("_");
+      return a === me ? b : a;
+    })
+  )
+];
   for (let chatId of chatIds) {
     const [a, b] = chatId.split("_");
     const partnerId = a === me ? b : a;
     const userSnap = await get(child(ref(db), `users/${partnerId}`));
     const user = userSnap.val();
+
+    // --- LẤY TIN NHẮN CUỐI (giới hạn 1) để kiểm tra read ---
+    const lastMsgQuery = query(
+      ref(db, `chats/${chatId}`),
+      orderByChild("time"),
+      limitToLast(1)
+    );
+    const lastSnap = await get(lastMsgQuery);
+    let hasUnread = false;
+    try {
+  const lastSnap = await get(lastMsgQuery);
+  lastSnap.forEach(ms => {
+    const m = ms.val();
+    if (m.from !== me && m.read === false) {
+      hasUnread = true;
+    }
+  });
+} catch (e) {
+  console.warn("Không thể query tin nhắn cuối do thiếu index:", e);
+  // fallback: không hiển thị dot
+};
+
+    // --- TẠO item ---
     const item = document.createElement("div");
     item.className = "item";
     item.innerHTML = `
       <img src="${user.avatar}"/>
-      <span>${user.name}</span>
+      <span class="chat-name">${user.name}</span>
+      ${hasUnread ? `<span class="unread-dot"></span>` : ""}
       <button class="delete-chat" title="Xoá trò chuyện">🗑️</button>
     `;
-    item.querySelector("span").onclick = () => startChat(partnerId, user.name);
+    item.querySelector(".chat-name").onclick = () => startChat(partnerId, user.name);
     item.querySelector(".delete-chat").onclick = async (e) => {
       e.stopPropagation();
       const confirmed = confirm(`Xác nhận xoá toàn bộ cuộc trò chuyện với ${user.name}?`);
@@ -235,17 +297,29 @@ async function loadFriends() {
       <button class="unfriend-btn" title="Huỷ kết bạn">❌</button>
     `;
     item.querySelector("span").onclick = () => startChat(uid, user.name);
-    item.querySelector(".unfriend-btn").onclick = async (e) => {
-      e.stopPropagation();
-      const confirmUnfriend = confirm(`Bạn có chắc muốn huỷ kết bạn với ${user.name}?`);
-      if (confirmUnfriend) {
-        await update(ref(db), {
-          [`users/${me}/friends/${uid}`]: false,
-          [`users/${uid}/friends/${me}`]: false
-        });
-        loadFriends();
-      }
-    };
+    // Thay thế toàn bộ handler .unfriend-btn bằng đoạn sau:
+item.querySelector(".unfriend-btn").onclick = async (e) => {
+  e.stopPropagation();
+  const chatId = [me, uid].sort().join("_");
+  const confirmUnfriend = confirm(
+    `Bạn có chắc muốn huỷ kết bạn với ${user.name}? Việc này sẽ xoá toàn bộ lịch sử tin nhắn.`
+  );
+  if (!confirmUnfriend) return;
+
+  // 1. Huỷ kết bạn hai chiều
+  await update(ref(db), {
+    [`users/${me}/friends/${uid}`]: false,
+    [`users/${uid}/friends/${me}`]: false
+  });
+
+  // 2. Xoá luôn toàn bộ cuộc trò chuyện
+  await set(ref(db, `chats/${chatId}`), null);
+
+  // 3. Thông báo và reload danh sách bạn bè
+  alert("Đã huỷ kết bạn và xoá tất cả lịch sử tin nhắn.");
+  loadFriends();
+};
+
     friendsList.appendChild(item);
   }
 }
@@ -293,7 +367,8 @@ document.getElementById("fileInput").onchange = async (e) => {
       from: me,
       to: currentChatUid,
       message: encryptMessage(messageContent),
-      time: ts
+      time: ts,
+      read: false
     });
 
     await push(ref(db, 'uploads'), {
