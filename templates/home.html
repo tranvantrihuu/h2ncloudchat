@@ -8,6 +8,15 @@
     </script>
   {% endif %}
 {% endwith %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for msg in messages %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <div class="card login-card">
     <h2>Đăng nhập</h2>

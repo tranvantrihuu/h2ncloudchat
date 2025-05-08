@@ -554,3 +554,123 @@ button.accept:active {
   margin-left: 6px;
   vertical-align: middle;
 }
+/* Container chính */
+#historyAdminList {
+  margin-top: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+/* Mỗi dòng chat */
+#historyAdminList > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+#historyAdminList > div:last-child {
+  border-bottom: none;
+}
+
+/* Hover effect cho dòng */
+#historyAdminList > div:hover {
+  background-color: #f1f1f1;
+}
+
+/* Nội dung text trong span */
+#historyAdminList span {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Nút Xóa */
+.delete-history-btn {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+.delete-history-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Thông báo trạng thái (Đang tải, lỗi, v.v.) */
+#historyAdminList p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+}
+#historyAdminList p[style*="color:red"] {
+  color: #c0392b;
+}
+/* Nút Tìm lịch sử */
+#searchHistoryBtn {
+  display: inline-block;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  margin-left: 8px; /* cách input một chút */
+}
+
+#searchHistoryBtn:hover {
+  background-color: #2980b9;
+}
+
+#searchHistoryBtn:active {
+  transform: scale(0.98);
+}
+
+#searchHistoryBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5);
+}
+
+#searchHistoryBtn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+/* Bỏ marker cho toàn bộ <li> trong #userEmailsList */
+#userEmailsList {
+  list-style: none;
+  padding-left: 8px;  /* indent chung cho cả ul */
+  margin: 0;
+}
+
+#userEmailsList li {
+  margin: 4px 0;
+  text-indent: -8px;  /* kéo số về sát lề */
+}
+/* Container bao ul */
+.email-list-wrapper {
+  /* Ví dụ bạn muốn giới hạn chiều rộng và canh giữa */
+  max-width: 300px;
+  margin: 0 auto;       /* canh giữa wrapper nếu cần */
+}
+
+/* Reset padding/margin UL */
+.email-list-wrapper ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Canh lề trái cho từng LI */
+.email-list-wrapper li {
+  margin: 4px 0;        /* khoảng cách giữa các dòng */
+  padding-left: 0;      /* xóa padding mặc định */
+  text-align: left;     /* canh trái nội dung */
+}

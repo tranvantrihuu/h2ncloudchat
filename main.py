@@ -24,7 +24,6 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 db = firebase.database()
 storage = firebase.storage()
-
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 firestore_db = firestore.client()
@@ -54,46 +53,99 @@ def signup():
     username = email.split('@')[0]
 
     try:
+        # Tạo user trên Firebase Auth
         user = auth.create_user_with_email_and_password(email, password)
         uid = user['localId']
 
+        # Upload avatar lên Cloudinary (nếu có)
         avatar_url = ''
         if avatar:
             upload_result = cloudinary.uploader.upload(avatar, folder='avatars')
             avatar_url = upload_result['secure_url']
 
+        # Lưu thông tin vào Firestore, kèm role = 'user'
         firestore_db.collection('users').document(uid).set({
             'email': email,
             'name': name,
             'birth': birth,
             'gender': gender,
             'username': username,
-            'avatar': avatar_url
+            'avatar': avatar_url,
+            'role': 'user'
         })
 
+        # Lưu thông tin vào Realtime Database, kèm role = 'user'
         db.child("users").child(uid).set({
             'email': email,
             'name': name,
-            'avatar': avatar_url
+            'birth': birth,
+            'gender': gender,
+            'username': username,
+            'avatar': avatar_url,
+            'role': 'user'
         })
 
+        # Đặt session và chuyển hướng
         session['uid'] = uid
         return redirect('/chat')
 
     except Exception as e:
         return jsonify({'error': str(e)})
 
+
 @app.route('/login', methods=['POST'])
 def login():
     email = request.form['email']
     password = request.form['password']
     try:
+        # Đăng nhập với Firebase Auth
         user = auth.sign_in_with_email_and_password(email, password)
-        session['uid'] = user['localId']
-        return redirect('/chat')
-    except:
+        uid = user['localId']
+        session['uid'] = uid
+
+        # Lấy thông tin user từ Realtime Database
+        user_snapshot = db.child("users").child(uid).get()
+        user_data = user_snapshot.val() or {}
+        role = user_data.get('role', 'user')
+
+        # Điều hướng theo role
+        if role == 'admin':
+            return redirect('/admin')      # Admin dashboard
+        else:
+            return redirect('/chat')       # Trang chat bình thường
+
+    except Exception as e:
         flash('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!')
         return redirect('/')
+
+
+from flask import render_template, redirect, session, flash
+
+
+@app.route('/admin')
+def admin_dashboard():
+    # Kiểm tra đã login chưa
+    uid = session.get('uid')
+    if not uid:
+        flash('Vui lòng đăng nhập để truy cập trang này.')
+        return redirect('/')
+
+    # Lấy thông tin user từ RTDB
+    try:
+        user_snapshot = db.child("users").child(uid).get()
+        user_data = user_snapshot.val() or {}
+    except Exception as e:
+        flash('Lỗi hệ thống, vui lòng thử lại sau.')
+        return redirect('/')
+
+    # Kiểm tra role
+    if user_data.get('role') != 'admin':
+        flash('Bạn không có quyền truy cập trang này.')
+        return redirect('/')
+
+    # Nếu là admin thì render dashboard
+    return render_template('admin.html')
+
 
 @app.route('/forgotpass')
 def forgot_pass():
@@ -112,15 +164,21 @@ def logout():
 
 @app.route('/chat')
 def chat():
+    # Nếu chưa có uid trong session thì yêu cầu đăng nhập
     if 'uid' not in session:
+        flash('Vui lòng đăng nhập để truy cập trang Chat!')
         return redirect('/')
+    # Đã đăng nhập, lấy thông tin và render chat
     user_info = firestore_db.collection('users').document(session['uid']).get().to_dict()
     return render_template('chat.html', user=user_info, uid=session['uid'])
 
 @app.route('/profile')
 def profile():
+    # Nếu chưa có uid trong session thì yêu cầu đăng nhập
     if 'uid' not in session:
+        flash('Vui lòng đăng nhập để xem trang Profile!')
         return redirect('/')
+    # Đã đăng nhập, lấy thông tin và render profile
     user_info = firestore_db.collection('users').document(session['uid']).get().to_dict()
     return render_template('profile.html', user=user_info)
 

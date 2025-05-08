@@ -54,7 +54,6 @@ const chatHeader = document.getElementById("chatHeader");
 const msgInput = document.getElementById("msgInput");
 // … các import, cấu hình, encrypt/decrypt…
 
-// 1) Hàm đánh dấu đã đọc
 async function markAllRead(friendId) {
   const chatId = [me, friendId].sort().join("_");
   const chatSnap = await get(ref(db, `chats/${chatId}`));
@@ -84,8 +83,6 @@ function startChat(toUid, toName) {
     listenToMessages(toUid);
   });
 }
-
-// … rồi mới tới các hàm khác (sendBtn.onclick, loadHistory, loadFriends, …) …
 
 historyBtn.onclick = () => {
   historyBtn.classList.add("active");
